@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Fusion;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
     CharacterController controller;
     Rigidbody rb;
@@ -32,21 +33,22 @@ public class PlayerMovement : MonoBehaviour
         rb.isKinematic = true;
     }
 
-    void HandleInput()
+    public override void FixedUpdateNetwork()
     {
-        input = new Vector3( Input.GetAxisRaw( "Horizontal" ), 0f, Input.GetAxisRaw( "Vertical" ) );
-        input = transform.TransformDirection( input );
-        input = Vector3.ClampMagnitude( input, 1f ); 
-
-        if ( Input.GetButtonDown( "Jump" ))
+        if (GetInput(out NetworkInputData data))
         {
-            Jump();
-        }         
+            data.direction.Normalize();
+            input = data.direction;
+            if (data.isJump)
+            {
+                Jump();
+            }
+        }
     }
 
     void CheckIfGrounded()
     {
-        isGrounded = Physics.CheckSphere( groundCheck.position, 0.2f, groundMask );
+        isGrounded = Physics.CheckSphere(groundCheck.position, 0.2f, groundMask);
     }
 
     // Update is called once per frame
@@ -55,7 +57,6 @@ public class PlayerMovement : MonoBehaviour
         if (isAlive)
         {
             CheckIfGrounded();
-            HandleInput();
             if (isGrounded)
             {
                 GroundMovement();
@@ -69,9 +70,9 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void GroundMovement() 
+    void GroundMovement()
     {
-        if ( input.x != 0 )
+        if (input.x != 0)
         {
             move.x += input.x * speed;
         }
@@ -79,7 +80,7 @@ public class PlayerMovement : MonoBehaviour
         {
             move.x = 0;
         }
-        if ( input.z != 0 )
+        if (input.z != 0)
         {
             move.z += input.z * speed;
         }
@@ -87,26 +88,26 @@ public class PlayerMovement : MonoBehaviour
         {
             move.z = 0;
         }
-        move = Vector3.ClampMagnitude( move, speed );
+        move = Vector3.ClampMagnitude(move, speed);
     }
 
     void AirMovement()
     {
         move.z += input.z * airSpeed;
         move.x += input.x * airSpeed;
-        move = Vector3.ClampMagnitude( move, speed );
+        move = Vector3.ClampMagnitude(move, speed);
     }
 
 
-    void ApplyGravity() 
+    void ApplyGravity()
     {
         Yvelocity.y += gravity * Time.deltaTime;
-        controller.Move( Yvelocity * Time.deltaTime );
+        controller.Move(Yvelocity * Time.deltaTime);
     }
 
-     void Jump()
+    void Jump()
     {
-        Yvelocity.y = Mathf.Sqrt( jumpHeight * -2f * gravity );    
+        Yvelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
     }
 
     void OnTriggerEnter(Collider coll)

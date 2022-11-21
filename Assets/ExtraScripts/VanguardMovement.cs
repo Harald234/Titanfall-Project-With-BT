@@ -1,8 +1,10 @@
+using Fusion;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VanguardMovement : MonoBehaviour
+public class VanguardMovement : NetworkBehaviour
 {
     CharacterController controller;
  
@@ -41,13 +43,15 @@ public class VanguardMovement : MonoBehaviour
  
     void HandleInput()
     {
-        input = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
        
         titanAnimator.SetFloat("moveX", input.x, 0.1f, Time.deltaTime);
         titanAnimator.SetFloat("moveZ", input.z, 0.1f, Time.deltaTime);
- 
-        input = transform.TransformDirection( input );
-        input = Vector3.ClampMagnitude( input, 1f );
+
+        if (GetInput(out NetworkInputData data))
+        {
+            data.direction.Normalize();
+            input = data.direction;
+        }
  
         if (Input.GetKeyDown(KeyCode.LeftShift) && !isWalking)
         {

@@ -256,7 +256,6 @@ GameObject:
   - component: {fileID: 4186822761668775020}
   - component: {fileID: 4186822761668775021}
   - component: {fileID: 4186822761668775018}
-  - component: {fileID: 4186822761668775029}
   - component: {fileID: 4186822761668775019}
   - component: {fileID: 4186822761668775017}
   - component: {fileID: 4186822761668775016}
@@ -300,6 +299,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06fcf299a93d6534d9d7d0769692e1c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
   groundCheck: {fileID: 4186822761209185573}
   groundMask:
     serializedVersion: 2
@@ -325,42 +325,6 @@ MonoBehaviour:
   maxX: 60
   sensitivity: 4.5
   cam: {fileID: 4186822761417710509}
---- !u!114 &4186822761668775029
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4186822761668775023}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 378411a89480da345945c2f888327a2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
-  InterpolationSpace: 0
-  InterpolationTarget: {fileID: 4186822761181016723}
-  InterpolateErrorCorrection: 1
-  InterpolatedErrorCorrectionSettings:
-    MinRate: 3.3
-    MaxRate: 10
-    PosBlendStart: 0.25
-    PosBlendEnd: 1
-    PosMinCorrection: 0.025
-    PosTeleportDistance: 2
-    RotBlendStart: 0.1
-    RotBlendEnd: 0.5
-    RotTeleportRadians: 1.5
-  UseLegacySharedModeInterpolation: 0
-  TargetInterpolationDelay: 0.03
-  gravity: -20
-  jumpImpulse: 8
-  acceleration: 10
-  braking: 10
-  maxSpeed: 2
-  rotationSpeed: 15
-  _IsGrounded: 0
-  _Velocity: {x: 0, y: 0, z: 0}
 --- !u!143 &4186822761668775019
 CharacterController:
   m_ObjectHideFlags: 0
@@ -486,5 +450,5 @@ MonoBehaviour:
     RawGuidValue: 20e910137b0efb044b61e1d535009af4
   NestedObjects: []
   NetworkedBehaviours:
-  - {fileID: 4186822761668775029}
+  - {fileID: 4186822761668775021}
   SimulationBehaviours: []

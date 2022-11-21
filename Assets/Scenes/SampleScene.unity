@@ -10089,6 +10089,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa6e5c3690afb6042b6e25201be5ccf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerPrefab:
+    RawGuidValue: 20e910137b0efb044b61e1d535009af4
+  _vanguardTitanPrefab:
+    RawGuidValue: cf462d6715c994f4d848251fb0993fa2
 --- !u!1 &614739356
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,7 +12,11 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     NetworkRunner _runner;
 
-    [SerializeField] private NetworkPrefabRef _playerPrefab;
+    [SerializeField]
+    private NetworkPrefabRef _playerPrefab;
+
+    [SerializeField]
+    private NetworkPrefabRef _vanguardTitanPrefab;
     private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
 
     async void StartGame(GameMode gameMode)
@@ -76,7 +80,19 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        // No need for this right now.
+        NetworkObject playerObject;
+        _spawnedCharacters.TryGetValue(runner.LocalPlayer, out playerObject);
+
+        if (playerObject == null) return;
+
+        var data = new NetworkInputData();
+        Vector3 currentInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
+        currentInput = playerObject.gameObject.transform.TransformDirection(currentInput);
+        currentInput = Vector3.ClampMagnitude(currentInput, 1f);
+        data.direction += currentInput;
+        data.isJump = Input.GetKeyDown(KeyCode.Space);
+
+        input.Set(data);
     }
 
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
@@ -86,12 +102,18 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        Debug.Log("Player joined Server -> " + runner.name);
+        Debug.Log("Player joined Server -> " + player.PlayerId);
         if (runner.IsServer)
         {
             // Create a unique position for the player
             Vector3 spawnPosition = new Vector3((player.RawEncoded % runner.Config.Simulation.DefaultPlayers) * 3, 1, 0);
             NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
+
+            NetworkObject networkPlayerTitanObject = runner.Spawn(_vanguardTitanPrefab, spawnPosition, Quaternion.identity, player);
+            AccesTitan accesTitan = networkPlayerObject.GetComponent<AccesTitan>();
+            accesTitan.titanObject = networkPlayerTitanObject;
+            accesTitan.titanScript = networkPlayerTitanObject.GetComponent<EnterVanguardTitan>();
+
             // Keep track of the player avatars so we can remove it when they disconnect
             _spawnedCharacters.Add(player, networkPlayerObject);
         }
@@ -103,6 +125,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         // Find and remove the players avatar
         if (_spawnedCharacters.TryGetValue(player, out NetworkObject networkObject))
         {
+            runner.Despawn(networkObject.GetComponent<AccesTitan>().titanObject);
             runner.Despawn(networkObject);
             _spawnedCharacters.Remove(player);
         }

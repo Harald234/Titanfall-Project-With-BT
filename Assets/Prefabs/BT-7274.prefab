@@ -41260,6 +41260,7 @@ GameObject:
   - component: {fileID: 6743662489385095292}
   - component: {fileID: 6743662489385095294}
   - component: {fileID: 6743662489385095295}
+  - component: {fileID: 6553414488199295633}
   m_Layer: 6
   m_Name: BT-7274
   m_TagString: Untagged
@@ -41385,6 +41386,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 781dbfb6e6d6bf94d82e11919fa1758d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
   groundCheck: {fileID: 6743662488958111497}
   groundMask:
     serializedVersion: 2
@@ -41506,8 +41508,40 @@ MonoBehaviour:
     RawGuidValue: cf462d6715c994f4d848251fb0993fa2
   NestedObjects: []
   NetworkedBehaviours:
+  - {fileID: 6743662489385095234}
   - {fileID: 6743662489385095294}
+  - {fileID: 6553414488199295633}
   SimulationBehaviours: []
+--- !u!114 &6553414488199295633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6743662489385095242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 506319458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  Animator: {fileID: 5861193692946347020}
+  TotalWords: 12
+  SyncSettings: -1
+  FloatAccuracy:
+    _value: 0
+    _inverse: 0
+    _hash: -814817977
+  TimeAccuracy:
+    _value: 0
+    _inverse: 0
+    _hash: 1061325578
+  WeightAccuracy:
+    _value: 0
+    _inverse: 0
+    _hash: -814817977
+  StateHashes: 000000008db10a97ce1f399415b524dc47ef5bf5c0a47650b96ee5f6b75580eff4fbb3ec557a918d0720eea48eca6f910c852314a59465884ba3c8c4b00bf65393bbf5f59d18781631a619b6ddd7cd479b1859ab13f1b574c27b3a7e464a74515cff201eb2c922b03364cec061f36674098044b8b43843419be24c02
+  TriggerHashes: 00000000cdf49398bbb4a6908eca6f9155ceb8a2
 --- !u!1 &6743662489393025859
 GameObject:
   m_ObjectHideFlags: 0

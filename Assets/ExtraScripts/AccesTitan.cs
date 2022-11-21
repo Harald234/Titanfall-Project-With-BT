@@ -1,9 +1,12 @@
+using Fusion;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class AccesTitan : MonoBehaviour
 {
+    public NetworkObject titanObject;
     public EnterVanguardTitan titanScript;
  
     void Update()
