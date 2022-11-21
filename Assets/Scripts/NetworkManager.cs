@@ -107,12 +107,18 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             // Create a unique position for the player
             Vector3 spawnPosition = new Vector3((player.RawEncoded % runner.Config.Simulation.DefaultPlayers) * 3, 1, 0);
+            Vector3 titanPosition = spawnPosition;
+            titanPosition.y = 25;
             NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
 
             NetworkObject networkPlayerTitanObject = runner.Spawn(_vanguardTitanPrefab, spawnPosition, Quaternion.identity, player);
             AccesTitan accesTitan = networkPlayerObject.GetComponent<AccesTitan>();
             accesTitan.titanObject = networkPlayerTitanObject;
-            accesTitan.titanScript = networkPlayerTitanObject.GetComponent<EnterVanguardTitan>();
+            EnterVanguardTitan enterVanguardTitan = networkPlayerTitanObject.GetComponent<EnterVanguardTitan>();
+            enterVanguardTitan.player = networkPlayerObject.gameObject;
+            enterVanguardTitan.playerCamera = enterVanguardTitan.player.GetComponentInChildren<Camera>().gameObject;
+            accesTitan.titanScript = enterVanguardTitan;
+
 
             // Keep track of the player avatars so we can remove it when they disconnect
             _spawnedCharacters.Add(player, networkPlayerObject);
