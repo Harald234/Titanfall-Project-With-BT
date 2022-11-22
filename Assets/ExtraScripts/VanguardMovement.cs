@@ -43,15 +43,14 @@ public class VanguardMovement : NetworkBehaviour
  
     void HandleInput()
     {
-       
-        titanAnimator.SetFloat("moveX", input.x, 0.1f, Time.deltaTime);
-        titanAnimator.SetFloat("moveZ", input.z, 0.1f, Time.deltaTime);
-
         if (GetInput(out NetworkInputData data))
         {
             data.direction.Normalize();
             input = data.direction;
         }
+        
+        titanAnimator.SetFloat("moveX", input.x, 0.1f, Time.deltaTime);
+        titanAnimator.SetFloat("moveZ", input.z, 0.1f, Time.deltaTime);
  
         if (Input.GetKeyDown(KeyCode.LeftShift) && !isWalking)
         {

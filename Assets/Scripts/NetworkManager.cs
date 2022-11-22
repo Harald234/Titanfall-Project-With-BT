@@ -17,6 +17,10 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     [SerializeField]
     private NetworkPrefabRef _vanguardTitanPrefab;
+
+    public Transform spawnA;
+    public Transform spawnB;
+    
     private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
 
     async void StartGame(GameMode gameMode)
@@ -106,9 +110,9 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         if (runner.IsServer)
         {
             // Create a unique position for the player
-            Vector3 spawnPosition = new Vector3((player.RawEncoded % runner.Config.Simulation.DefaultPlayers) * 3, 1, 0);
+            Vector3 spawnPosition = new Vector3(spawnB.position.x + ((player.RawEncoded % runner.Config.Simulation.DefaultPlayers) * 3), 1, spawnB.position.z);
             Vector3 titanPosition = spawnPosition;
-            titanPosition.y = 25;
+            titanPosition.y = 178;
             NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
 
             NetworkObject networkPlayerTitanObject = runner.Spawn(_vanguardTitanPrefab, spawnPosition, Quaternion.identity, player);

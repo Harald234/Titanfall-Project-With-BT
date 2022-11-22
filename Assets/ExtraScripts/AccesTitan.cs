@@ -19,13 +19,16 @@ public class AccesTitan : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.V))
         {
+            Vector3 position = gameObject.transform.position;
+            position.y += 178;
+            titanObject.transform.position = position;
             titanScript.StartFall();
         }
     }
  
     void EmbarkWithTitan()
     {
-        if (Input.GetKeyDown(KeyCode.F) && titanScript.inRangeForEmbark == true)
+        if (Input.GetKeyDown(KeyCode.F) && titanScript.inRangeForEmbark)
         {
             StartCoroutine(titanScript.Embark());
         }
