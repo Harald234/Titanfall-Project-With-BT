@@ -76,32 +76,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        NetworkObject playerObject;
-        _spawnedCharacters.TryGetValue(runner.LocalPlayer, out playerObject);
-
-        if (playerObject == null) return;
-
-        var data = new NetworkInputData();
-        Vector3 currentInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
-        if (playerObject.TryGetComponent(out AccesTitan accesTitan))
-        {
-            currentInput =
-                (accesTitan.TitanScript.inTitan ? accesTitan.TitanObject : playerObject).gameObject.transform
-                .TransformDirection(currentInput);
-        }
-        else
-        {
-            currentInput = playerObject.gameObject.transform.TransformDirection(currentInput);
-        }
-
-        currentInput = Vector3.ClampMagnitude(currentInput, 1f);
-        data.direction += currentInput;
-        data.isJump = Input.GetKeyDown(KeyCode.Space);
-        data.isAiming = Input.GetKey(KeyCode.Mouse3);
-        data.isDashing = Input.GetKeyDown(KeyCode.LeftControl);
-        data.isSprinting = Input.GetKey(KeyCode.LeftShift);
-
-        input.Set(data);
+        // Ignore since we dont use a Host-Client scenario rn.
     }
 
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)

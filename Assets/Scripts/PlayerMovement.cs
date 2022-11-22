@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,33 +34,37 @@ public class PlayerMovement : NetworkBehaviour
         rb.isKinematic = true;
     }
 
-    public override void FixedUpdateNetwork()
+    void HandleInput()
+    {
+        input = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
+        input = transform.TransformDirection(input);
+        input = Vector3.ClampMagnitude(input, 1f);
+
+        if (Input.GetButtonDown("Jump"))
+        {
+            Jump();
+        }
+    }
+
+    private void Update()
     {
         if (!HasInputAuthority) return;
         
-        if (GetInput(out NetworkInputData data))
+        if (isAlive)
         {
-            data.direction.Normalize();
-            input = data.direction;
-            if (data.isJump)
+            CheckIfGrounded();
+            HandleInput();
+            if (isGrounded)
             {
-                Jump();
+                GroundMovement();
             }
-            
-            if (isAlive)
+            else
             {
-                CheckIfGrounded();
-                if (isGrounded)
-                {
-                    GroundMovement();
-                }
-                else
-                {
-                    AirMovement();
-                }
-                controller.Move(move * Time.deltaTime);
-                ApplyGravity();
+                AirMovement();
             }
+
+            controller.Move(move * Time.deltaTime);
+            ApplyGravity();
         }
     }
 
@@ -78,6 +83,7 @@ public class PlayerMovement : NetworkBehaviour
         {
             move.x = 0;
         }
+
         if (input.z != 0)
         {
             move.z += input.z * speed;
@@ -86,6 +92,7 @@ public class PlayerMovement : NetworkBehaviour
         {
             move.z = 0;
         }
+
         move = Vector3.ClampMagnitude(move, speed);
     }
 

@@ -42,43 +42,42 @@ public class VanguardMovement : NetworkBehaviour
 
     void HandleInput()
     {
-        if (GetInput(out NetworkInputData data))
+        input = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
+
+        titanAnimator.SetFloat("moveX", input.x, 0.1f, Time.deltaTime);
+        titanAnimator.SetFloat("moveZ", input.z, 0.1f, Time.deltaTime);
+
+        input = transform.TransformDirection(input);
+        input = Vector3.ClampMagnitude(input, 1f);
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !isWalking)
         {
-            data.direction.Normalize();
-            input = data.direction;
+            isSprinting = true;
+        }
 
-            titanAnimator.SetFloat("moveX", input.x, 0.1f, Time.deltaTime);
-            titanAnimator.SetFloat("moveZ", input.z, 0.1f, Time.deltaTime);
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            isSprinting = false;
+        }
 
-            if (data.isSprinting && !isWalking)
-            {
-                isSprinting = true;
-            }
+        if (Input.GetKeyDown(KeyCode.Mouse2) && !isSprinting)
+        {
+            isWalking = true;
+        }
 
-            if (!data.isSprinting)
-            {
-                isSprinting = false;
-            }
+        if (Input.GetKeyUp(KeyCode.Mouse2))
+        {
+            isWalking = false;
+        }
 
-            if (data.isAiming && !isSprinting)
-            {
-                isWalking = true;
-            }
-
-            if (!data.isAiming)
-            {
-                isWalking = false;
-            }
-
-            if (data.isDashing)
-            {
-                StartCoroutine(HandleDash());
-            }
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            StartCoroutine(HandleDash());
         }
     }
 
     // Update is called once per frame
-    public override void FixedUpdateNetwork()
+    void Update()
     {
         if (!HasInputAuthority) return;
 
