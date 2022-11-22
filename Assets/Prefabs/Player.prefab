@@ -225,7 +225,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 383
+    m_Bits: 895
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -261,7 +261,8 @@ GameObject:
   - component: {fileID: 4186822761668775016}
   - component: {fileID: 4186822761668775030}
   - component: {fileID: 4186822761668775031}
-  - component: {fileID: 4186822761668775028}
+  - component: {fileID: 2221782363576981722}
+  - component: {fileID: 2954982466273989518}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -321,6 +322,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfb627ab7301a3943be780a013e0fd96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
   minX: -60
   maxX: 60
   sensitivity: 4.5
@@ -385,7 +387,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d36eeb40419c5d40bd520052f3b6ce6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  titanScript: {fileID: 0}
+  _interpolationDataSource: 0
+  _TitanObject: {fileID: 0}
+  _TitanScript: {fileID: 0}
 --- !u!23 &4186822761668775031
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -428,7 +432,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4186822761668775028
+--- !u!114 &2221782363576981722
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -443,7 +447,7 @@ MonoBehaviour:
   ObjectInterest: 1
   DefaultInterestGroups: []
   DestroyWhenStateAuthorityLeaves: 0
-  AllowStateAuthorityOverride: 0
+  AllowStateAuthorityOverride: 1
   AoiPositionSource: {fileID: 0}
   Flags: 2305
   NetworkGuid:
@@ -451,4 +455,43 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 4186822761668775021}
+  - {fileID: 4186822761668775018}
+  - {fileID: 4186822761668775030}
+  - {fileID: 2954982466273989518}
   SimulationBehaviours: []
+--- !u!114 &2954982466273989518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4186822761668775023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 378411a89480da345945c2f888327a2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  InterpolationSpace: 0
+  InterpolationTarget: {fileID: 4186822761181016723}
+  InterpolateErrorCorrection: 1
+  InterpolatedErrorCorrectionSettings:
+    MinRate: 3.3
+    MaxRate: 10
+    PosBlendStart: 0.25
+    PosBlendEnd: 1
+    PosMinCorrection: 0.025
+    PosTeleportDistance: 2
+    RotBlendStart: 0.1
+    RotBlendEnd: 0.5
+    RotTeleportRadians: 1.5
+  UseLegacySharedModeInterpolation: 0
+  TargetInterpolationDelay: 0.03
+  gravity: -20
+  jumpImpulse: 8
+  acceleration: 10
+  braking: 10
+  maxSpeed: 2
+  rotationSpeed: 15
+  _IsGrounded: 0
+  _Velocity: {x: 0, y: 0, z: 0}

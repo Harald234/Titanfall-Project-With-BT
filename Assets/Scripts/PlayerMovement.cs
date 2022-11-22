@@ -6,7 +6,7 @@ using Fusion;
 
 public class PlayerMovement : NetworkBehaviour
 {
-    CharacterController controller;
+    NetworkCharacterControllerPrototype controller;
     Rigidbody rb;
     public Transform groundCheck;
     public LayerMask groundMask;
@@ -26,15 +26,17 @@ public class PlayerMovement : NetworkBehaviour
     bool isAlive = true;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        controller = GetComponent<CharacterController>();
+        controller = GetComponent<NetworkCharacterControllerPrototype>();
         rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
     }
 
     public override void FixedUpdateNetwork()
     {
+        if (!HasInputAuthority) return;
+        
         if (GetInput(out NetworkInputData data))
         {
             data.direction.Normalize();
@@ -43,31 +45,27 @@ public class PlayerMovement : NetworkBehaviour
             {
                 Jump();
             }
+            
+            if (isAlive)
+            {
+                CheckIfGrounded();
+                if (isGrounded)
+                {
+                    GroundMovement();
+                }
+                else
+                {
+                    AirMovement();
+                }
+                controller.Move(move * Time.deltaTime);
+                ApplyGravity();
+            }
         }
     }
 
     void CheckIfGrounded()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, 0.2f, groundMask);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (isAlive)
-        {
-            CheckIfGrounded();
-            if (isGrounded)
-            {
-                GroundMovement();
-            }
-            else
-            {
-                AirMovement();
-            }
-            controller.Move(move * Time.deltaTime);
-            ApplyGravity();
-        }
     }
 
     void GroundMovement()

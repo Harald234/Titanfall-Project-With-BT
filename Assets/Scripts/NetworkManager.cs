@@ -1,26 +1,21 @@
 using Fusion;
 using Fusion.Sockets;
-
 using System;
 using System.Collections.Generic;
-
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 {
-
     NetworkRunner _runner;
 
-    [SerializeField]
-    private NetworkPrefabRef _playerPrefab;
+    [SerializeField] private NetworkPrefabRef _playerPrefab;
 
-    [SerializeField]
-    private NetworkPrefabRef _vanguardTitanPrefab;
+    [SerializeField] private NetworkPrefabRef _vanguardTitanPrefab;
 
     public Transform spawnA;
     public Transform spawnB;
-    
+
     private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
 
     async void StartGame(GameMode gameMode)
@@ -41,13 +36,9 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (_runner == null)
         {
-            if (GUI.Button(new Rect(0, 0, 200, 40), "Host"))
-            {
-                StartGame(GameMode.Host);
-            }
             if (GUI.Button(new Rect(0, 40, 200, 40), "Join"))
             {
-                StartGame(GameMode.Client);
+                StartGame(GameMode.Shared);
             }
         }
     }
@@ -59,7 +50,8 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
     {
-        Debug.Log("Connection failed to Server -> " + runner.name + " (" + remoteAddress.ToString() + ") " + reason.ToString());
+        Debug.Log("Connection failed to Server -> " + runner.name + " (" + remoteAddress + ") " +
+                  reason);
     }
 
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
@@ -91,10 +83,23 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
         var data = new NetworkInputData();
         Vector3 currentInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
-        currentInput = playerObject.gameObject.transform.TransformDirection(currentInput);
+        if (playerObject.TryGetComponent(out AccesTitan accesTitan))
+        {
+            currentInput =
+                (accesTitan.TitanScript.inTitan ? accesTitan.TitanObject : playerObject).gameObject.transform
+                .TransformDirection(currentInput);
+        }
+        else
+        {
+            currentInput = playerObject.gameObject.transform.TransformDirection(currentInput);
+        }
+
         currentInput = Vector3.ClampMagnitude(currentInput, 1f);
         data.direction += currentInput;
         data.isJump = Input.GetKeyDown(KeyCode.Space);
+        data.isAiming = Input.GetKey(KeyCode.Mouse3);
+        data.isDashing = Input.GetKeyDown(KeyCode.LeftControl);
+        data.isSprinting = Input.GetKey(KeyCode.LeftShift);
 
         input.Set(data);
     }
@@ -102,44 +107,69 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
     {
         // No need for this right now.
+        Debug.Log("Input by " + player.PlayerId + " is missing! (Input -> " + input + ")");
     }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         Debug.Log("Player joined Server -> " + player.PlayerId);
-        if (runner.IsServer)
+        if (runner.LocalPlayer == player)
         {
             // Create a unique position for the player
-            Vector3 spawnPosition = new Vector3(spawnB.position.x + ((player.RawEncoded % runner.Config.Simulation.DefaultPlayers) * 3), 1, spawnB.position.z);
+            Vector3 spawnPosition = spawnB.position;
             Vector3 titanPosition = spawnPosition;
             titanPosition.y = 178;
             NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
 
-            NetworkObject networkPlayerTitanObject = runner.Spawn(_vanguardTitanPrefab, spawnPosition, Quaternion.identity, player);
+            runner.SetPlayerObject(player, networkPlayerObject);
+
+            NetworkObject networkPlayerTitanObject =
+                runner.Spawn(_vanguardTitanPrefab, titanPosition, Quaternion.identity, player);
+
+            networkPlayerTitanObject.gameObject.layer = 6;
+            SetLayerRecrusivly(networkPlayerTitanObject.transform);
+
             AccesTitan accesTitan = networkPlayerObject.GetComponent<AccesTitan>();
-            accesTitan.titanObject = networkPlayerTitanObject;
+            accesTitan.TitanObject = networkPlayerTitanObject;
             EnterVanguardTitan enterVanguardTitan = networkPlayerTitanObject.GetComponent<EnterVanguardTitan>();
             enterVanguardTitan.player = networkPlayerObject.gameObject;
-            enterVanguardTitan.playerCamera = enterVanguardTitan.player.GetComponentInChildren<Camera>().gameObject;
-            accesTitan.titanScript = enterVanguardTitan;
 
+            enterVanguardTitan.playerCamera = enterVanguardTitan.player.GetComponentInChildren<Camera>().gameObject;
+            accesTitan.TitanScript = enterVanguardTitan;
 
             // Keep track of the player avatars so we can remove it when they disconnect
             _spawnedCharacters.Add(player, networkPlayerObject);
         }
     }
 
+    private void SetLayerRecrusivly(Transform parent)
+    {
+        foreach (Transform child in parent)
+        {
+            if (child.gameObject.layer == 9)
+            {
+                child.gameObject.layer = 6;
+            }
+
+            if (child.childCount > 0)
+            {
+                SetLayerRecrusivly(child);
+            }
+        }
+    }
+    
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
         Debug.Log("Player left Server -> " + runner.name);
         // Find and remove the players avatar
         if (_spawnedCharacters.TryGetValue(player, out NetworkObject networkObject))
         {
-            runner.Despawn(networkObject.GetComponent<AccesTitan>().titanObject);
+            runner.Despawn(networkObject.GetComponent<AccesTitan>().TitanObject);
             runner.Despawn(networkObject);
             _spawnedCharacters.Remove(player);
         }
     }
+
     public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data)
     {
         // No need for this right now.

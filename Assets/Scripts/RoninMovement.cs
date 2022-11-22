@@ -21,13 +21,13 @@ public class RoninMovement : MonoBehaviour
     void Update()
     {
         if (!isDead)
-        {        
-            agent.SetDestination(player.position);   
-            HandleAnimation();  
+        {
+            agent.SetDestination(player.position);
+            HandleAnimation();
             if (agent.isStopped == false)
             {
                 isMoving = true;
-            }     
+            }
             else
             {
                 isMoving = false;
@@ -78,7 +78,7 @@ public class RoninMovement : MonoBehaviour
 
         if (!isDead)
             agent.isStopped = false;
-            shouldBeStopped = false;
+        shouldBeStopped = false;
     }
 
     void HandleAnimation()

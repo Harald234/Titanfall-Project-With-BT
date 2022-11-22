@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Fusion;
 using UnityEngine;
 
-public class PlayerCamera : MonoBehaviour
+public class PlayerCamera : NetworkBehaviour
 {
     public float minX = -60f;
     public float maxX = 60f;
@@ -12,12 +13,25 @@ public class PlayerCamera : MonoBehaviour
  
     float rotY = 0f;
     float rotX = 0f;
- 
-    void Start()
+    
+    void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
+
+    void Start()
+    {
+        if (!HasInputAuthority)
+        {
+            cam.enabled = false;
+            if (cam.gameObject.TryGetComponent(out AudioListener audioListener))
+            {
+                audioListener.enabled = false;
+            }
+        }
+    }
+
  
     void Update()
     {
@@ -28,8 +42,6 @@ public class PlayerCamera : MonoBehaviour
  
         transform.localEulerAngles = new Vector3(0, rotY, 0);
         cam.transform.localEulerAngles = new Vector3(-rotX, 0, 0);
- 
-       
     }
 
 }

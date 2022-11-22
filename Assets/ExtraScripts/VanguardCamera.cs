@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Fusion;
 using UnityEngine;
 
-public class VanguardCamera : MonoBehaviour
+public class VanguardCamera : NetworkBehaviour
 {
     public Animator titanAnimator;
     public float minX = -60f;
@@ -31,7 +32,7 @@ public class VanguardCamera : MonoBehaviour
  
     Vector3 lastMousePosition;
  
-    void Start()
+    void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -40,6 +41,18 @@ public class VanguardCamera : MonoBehaviour
  
         enterScript = GetComponent<EnterVanguardTitan>();
         moveScript = GetComponent<VanguardMovement>();
+    }
+
+    void Start()
+    {
+        if (!HasInputAuthority)
+        {
+            cam.enabled = false;
+            if (cam.gameObject.TryGetComponent(out AudioListener audioListener))
+            {
+                audioListener.enabled = false;
+            }
+        }
     }
  
     void Update()

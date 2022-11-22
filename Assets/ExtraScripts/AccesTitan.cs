@@ -4,10 +4,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AccesTitan : MonoBehaviour
+public class AccesTitan : NetworkBehaviour
 {
-    public NetworkObject titanObject;
-    public EnterVanguardTitan titanScript;
+    [Networked]
+    public NetworkObject TitanObject { get; set; }
+    
+    [Networked]
+    public EnterVanguardTitan TitanScript { get; set; }
  
     void Update()
     {
@@ -17,20 +20,24 @@ public class AccesTitan : MonoBehaviour
  
     void StartTitanFall()
     {
+        if (!HasInputAuthority) return;
+        
         if (Input.GetKeyDown(KeyCode.V))
         {
             Vector3 position = gameObject.transform.position;
             position.y += 178;
-            titanObject.transform.position = position;
-            titanScript.StartFall();
+            TitanObject.transform.position = position;
+            TitanScript.StartFall();
         }
     }
  
     void EmbarkWithTitan()
     {
-        if (Input.GetKeyDown(KeyCode.F) && titanScript.inRangeForEmbark)
+        if (!HasInputAuthority) return;
+        
+        if (Input.GetKeyDown(KeyCode.F) && TitanScript.inRangeForEmbark)
         {
-            StartCoroutine(titanScript.Embark());
+            StartCoroutine(TitanScript.Embark());
         }
     }
 
