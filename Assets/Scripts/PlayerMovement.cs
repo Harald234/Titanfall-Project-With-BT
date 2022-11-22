@@ -7,7 +7,7 @@ using Fusion;
 
 public class PlayerMovement : NetworkBehaviour
 {
-    NetworkCharacterControllerPrototype controller;
+    CharacterController controller;
     Rigidbody rb;
     public Transform groundCheck;
     public LayerMask groundMask;
@@ -29,7 +29,7 @@ public class PlayerMovement : NetworkBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        controller = GetComponent<NetworkCharacterControllerPrototype>();
+        controller = GetComponent<CharacterController>();
         rb = GetComponent<Rigidbody>();
         rb.isKinematic = true;
     }

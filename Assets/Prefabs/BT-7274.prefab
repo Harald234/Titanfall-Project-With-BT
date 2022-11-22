@@ -41291,7 +41291,7 @@ GameObject:
   - component: {fileID: 6743662489385095292}
   - component: {fileID: 6553414488199295633}
   - component: {fileID: 1775270118597831475}
-  - component: {fileID: 6862059814719358707}
+  - component: {fileID: 7074905497601110381}
   m_Layer: 9
   m_Name: BT-7274
   m_TagString: Untagged
@@ -41542,9 +41542,9 @@ MonoBehaviour:
   - {fileID: 6743662489385095235}
   - {fileID: 6743662489385095292}
   - {fileID: 6553414488199295633}
-  - {fileID: 6862059814719358707}
+  - {fileID: 7074905497601110381}
   SimulationBehaviours: []
---- !u!114 &6862059814719358707
+--- !u!114 &7074905497601110381
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41553,7 +41553,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6743662489385095242}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 378411a89480da345945c2f888327a2d, type: 3}
+  m_Script: {fileID: 1710889294, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
@@ -41572,14 +41572,6 @@ MonoBehaviour:
     RotTeleportRadians: 1.5
   UseLegacySharedModeInterpolation: 0
   TargetInterpolationDelay: 0.03
-  gravity: -20
-  jumpImpulse: 8
-  acceleration: 10
-  braking: 10
-  maxSpeed: 2
-  rotationSpeed: 15
-  _IsGrounded: 0
-  _Velocity: {x: 0, y: 0, z: 0}
 --- !u!1 &6743662489393025859
 GameObject:
   m_ObjectHideFlags: 0

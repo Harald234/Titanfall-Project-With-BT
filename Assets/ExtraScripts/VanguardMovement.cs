@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class VanguardMovement : NetworkBehaviour
 {
-    NetworkCharacterControllerPrototype controller;
+    CharacterController controller;
 
     public Transform groundCheck;
 
@@ -36,7 +36,7 @@ public class VanguardMovement : NetworkBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        controller = GetComponent<NetworkCharacterControllerPrototype>();
+        controller = GetComponent<CharacterController>();
         enterScript = GetComponent<EnterVanguardTitan>();
     }
 

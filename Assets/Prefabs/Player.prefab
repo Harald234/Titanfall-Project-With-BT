@@ -262,7 +262,7 @@ GameObject:
   - component: {fileID: 4186822761668775030}
   - component: {fileID: 4186822761668775031}
   - component: {fileID: 2221782363576981722}
-  - component: {fileID: 2954982466273989518}
+  - component: {fileID: 2685036082454005649}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -457,9 +457,9 @@ MonoBehaviour:
   - {fileID: 4186822761668775021}
   - {fileID: 4186822761668775018}
   - {fileID: 4186822761668775030}
-  - {fileID: 2954982466273989518}
+  - {fileID: 2685036082454005649}
   SimulationBehaviours: []
---- !u!114 &2954982466273989518
+--- !u!114 &2685036082454005649
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -468,7 +468,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4186822761668775023}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 378411a89480da345945c2f888327a2d, type: 3}
+  m_Script: {fileID: 1710889294, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
@@ -487,11 +487,3 @@ MonoBehaviour:
     RotTeleportRadians: 1.5
   UseLegacySharedModeInterpolation: 0
   TargetInterpolationDelay: 0.03
-  gravity: -20
-  jumpImpulse: 8
-  acceleration: 10
-  braking: 10
-  maxSpeed: 2
-  rotationSpeed: 15
-  _IsGrounded: 0
-  _Velocity: {x: 0, y: 0, z: 0}
