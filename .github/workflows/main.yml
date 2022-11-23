@@ -1,4 +1,4 @@
-name: Deployment
+name: Unity Builds
 on:
   ['push']
 jobs:
