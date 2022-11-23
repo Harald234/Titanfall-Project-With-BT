@@ -119,11 +119,15 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (coll.gameObject.CompareTag("Enemy"))
         {
-            isAlive = false;
-            controller.enabled = false;
-            rb.isKinematic = false;
-            rb.AddForce(coll.gameObject.transform.forward * 2000f, ForceMode.Force);
-            text.enabled = true;
+            if (coll.gameObject.TryGetComponent<Renderer>(out Renderer enemyRenderer))
+            {
+                if (!enemyRenderer.isVisible) return;
+                isAlive = false;
+                controller.enabled = false;
+                rb.isKinematic = false;
+                rb.AddForce(coll.gameObject.transform.forward * 2000f, ForceMode.Force);
+                if (text != null) text.enabled = true;
+            }
         }
     }
 }

@@ -23,7 +23,7 @@ public class EnterVanguardTitan : NetworkBehaviour
  
     Vector3 Yvelocity;
  
-    bool isFalling;
+    public bool isFalling;
     bool isGrounded;
     public bool isEmbarking;
     public bool inTitan;
@@ -138,7 +138,8 @@ public class EnterVanguardTitan : NetworkBehaviour
     void Fall()
     {
         Yvelocity.y += fallingSpeed * Time.deltaTime;
-        controller.Move( Yvelocity * Time.deltaTime );
+        if (controller.enabled)
+            controller.Move( Yvelocity * Time.deltaTime );
     }
 
 }

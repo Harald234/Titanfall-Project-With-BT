@@ -22,10 +22,11 @@ public class AccesTitan : NetworkBehaviour
     {
         if (!HasInputAuthority) return;
         
-        if (Input.GetKeyDown(KeyCode.V))
+        if (Input.GetKeyDown(KeyCode.V) && !TitanScript.isFalling)
         {
-            Vector3 position = gameObject.transform.position;
-            position.y += 178;
+            Vector3 position = TitanScript.player.transform.position;
+            //// position.y += 178;
+            position.y += 70;
             TitanObject.transform.position = position;
             TitanScript.StartFall();
         }
