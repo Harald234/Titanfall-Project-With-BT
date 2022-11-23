@@ -21,13 +21,16 @@ public class RoninMovement : MonoBehaviour
     void Update()
     {
         if (!isDead)
-        {        
-            agent.SetDestination(player.position);   
-            HandleAnimation();  
+        {
+            player = GetClosestPlayer();
+            if (player == null) return;
+            
+            agent.SetDestination(player.position);
+            HandleAnimation();
             if (agent.isStopped == false)
             {
                 isMoving = true;
-            }     
+            }
             else
             {
                 isMoving = false;
@@ -48,6 +51,25 @@ public class RoninMovement : MonoBehaviour
                 agent.isStopped = false;
             }
         }
+    }
+
+    public Transform GetClosestPlayer()
+    {
+        Transform bestTarget = null;
+        float closestDistanceSqr = Mathf.Infinity;
+        Vector3 currentPosition = transform.position;
+        foreach (GameObject potentialTarget in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            Vector3 directionToTarget = potentialTarget.transform.position - currentPosition;
+            float dSqrToTarget = directionToTarget.sqrMagnitude;
+            if (dSqrToTarget < closestDistanceSqr)
+            {
+                closestDistanceSqr = dSqrToTarget;
+                bestTarget = potentialTarget.transform;
+            }
+        }
+
+        return bestTarget;
     }
 
     IEnumerator Stop()
@@ -78,7 +100,7 @@ public class RoninMovement : MonoBehaviour
 
         if (!isDead)
             agent.isStopped = false;
-            shouldBeStopped = false;
+        shouldBeStopped = false;
     }
 
     void HandleAnimation()

@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Fusion;
 using UnityEngine;
 
-public class EnterVanguardTitan : MonoBehaviour
+public class EnterVanguardTitan : NetworkBehaviour
 {
     public Animator titanAnimator;
  
@@ -22,7 +23,7 @@ public class EnterVanguardTitan : MonoBehaviour
  
     Vector3 Yvelocity;
  
-    bool isFalling;
+    public bool isFalling;
     bool isGrounded;
     public bool isEmbarking;
     public bool inTitan;
@@ -53,6 +54,24 @@ public class EnterVanguardTitan : MonoBehaviour
             isFalling = false;
         }
     }
+    
+    [Rpc]
+    private void Player_HideRPC()
+    {
+        if (Runner.TryGetPlayerObject(Object.InputAuthority, out NetworkObject networkObject))
+        {
+            networkObject.gameObject.SetActive(false);
+        }
+    }
+    
+    [Rpc]
+    private void Player_ShowRPC()
+    {
+        if (Runner.TryGetPlayerObject(Object.InputAuthority, out NetworkObject networkObject))
+        {
+            networkObject.gameObject.SetActive(true);
+        }
+    }
  
     public IEnumerator Embark()
     {
@@ -69,10 +88,11 @@ public class EnterVanguardTitan : MonoBehaviour
  
         yield return new WaitForSeconds(2.4f);
  
-        player.transform.parent = this.transform;
-        player.SetActive(false);
+        player.transform.parent = transform;
+        Player_HideRPC();
         embarkTitanCamera.SetActive(false);
         titanCamera.SetActive(true);
+
         inTitan = true;
         isEmbarking = false;
     }
@@ -91,7 +111,7 @@ public class EnterVanguardTitan : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            player.SetActive(true);
+            Player_ShowRPC();
             playerCamera.SetActive(true);
             titanCamera.SetActive(false);
             inTitan = false;
@@ -103,6 +123,8 @@ public class EnterVanguardTitan : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!HasInputAuthority) return;
+        
         if (inTitan)
         {
             ExitTitan();
@@ -116,7 +138,8 @@ public class EnterVanguardTitan : MonoBehaviour
     void Fall()
     {
         Yvelocity.y += fallingSpeed * Time.deltaTime;
-        controller.Move( Yvelocity * Time.deltaTime );
+        if (controller.enabled)
+            controller.Move( Yvelocity * Time.deltaTime );
     }
 
 }
