@@ -1,6 +1,6 @@
 name: Deployment
 on:
-  workflow_dispatch: {}
+  ['push']
 jobs:
   buildForWindowsAndLinux:
     name: Build for ${{ matrix.targetPlatform }}
